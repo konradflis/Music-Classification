@@ -180,5 +180,5 @@ fma_metadata
 
 fma_small.zip
 fma_metadata.zip
-project_data/audio_data/
-project_data/spectrogram_data/
+project_data/audio_data/*
+project_data/spectrogram_data/*
