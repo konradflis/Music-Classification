@@ -184,3 +184,5 @@ project_data/audio_data/*
 project_data/spectrogram_data/*
 
 .idea
+
+spectrograms
