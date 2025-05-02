@@ -23,7 +23,7 @@ def get_audio_path(audio_dir, track_id):
     return os.path.join(audio_dir, tid_str[:3], tid_str + '.mp3')
 
 
-def get_spectogram_path(spectrogram_dir, track_id):
+def get_spectrogram_path(spectrogram_dir, track_id):
     """
     Return the path to the spectrogram given the directory where the
     spectrogram is stored and the track ID.
