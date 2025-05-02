@@ -172,3 +172,17 @@ cython_debug/
 
 # PyPI configuration file
 .pypirc
+
+.DS_Store
+
+fma_small
+fma_metadata
+
+fma_small.zip
+fma_metadata.zip
+project_data/audio_data/*
+project_data/spectrogram_data/*
+
+.idea
+
+spectrograms
