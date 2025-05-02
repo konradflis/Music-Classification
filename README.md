@@ -39,10 +39,24 @@ poetry install
 
 ### 3. Activate the Virtual Environment
 
-Select created virtual enviroment in your IDE or activate it using:
+Select created virtual environment in your IDE or activate it using:
 
 ```bash
 poetry shell
+```
+
+### 4. Add Dependencies
+
+To add a new dependency to the project, use the following command:
+
+```bash
+poetry add <package-name>
+```
+
+For example, to add `numpy`:
+
+```bash
+poetry add numpy
 ```
 
 ---
@@ -51,8 +65,7 @@ poetry shell
 
 ### 1. Extract Spectrograms
 
-Run the spectrogram extraction script spectrogram_extract.py to generate spectrograms.
-
+Run the spectrogram extraction script spectrogram_extract.py to generate spectrograms.---
 The spectrograms will be saved in the `project_data/spectrograms/` folder.
 
 ### 2. Load Individual Spectrograms
