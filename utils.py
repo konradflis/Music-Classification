@@ -1,6 +1,7 @@
 import os
 import ast
 import pandas as pd
+from sklearn.model_selection import train_test_split
 
 NB_AUDIO_SAMPLES = 1321967
 SAMPLING_RATE = 44100
@@ -73,7 +74,6 @@ def load(filepath):
             tracks['set', 'subset'] = tracks['set', 'subset'].astype(
                 'category', categories=SUBSETS, ordered=True)
         except (ValueError, TypeError):
-            # the categories and ordered arguments were removed in pandas 0.25
             tracks['set', 'subset'] = tracks['set', 'subset'].astype(
                 pd.CategoricalDtype(categories=SUBSETS, ordered=True))
 
@@ -88,3 +88,18 @@ def load(filepath):
 
 def load_mfcc_data():
     return pd.read_csv('project_data/mfcc_data.csv', header=[0, 1], index_col=0)
+
+
+def dataset_split():
+    df = pd.read_csv("project_data/tracks.csv")
+    df['filename'] = df['track_id'].apply(lambda x: f"{int(x):06d}.png")
+    df = df.dropna(subset=['genre'])
+    labels_df = df[['filename', 'genre']].rename(columns={'genre': 'label'})
+    train_df, val_df = train_test_split(
+        labels_df,
+        test_size=0.2,
+        stratify=labels_df['label'],
+        random_state=42
+    )
+    train_df.to_csv("project_data/train_set.csv", index=False)
+    val_df.to_csv("project_data/val_set.csv", index=False)
