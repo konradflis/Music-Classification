@@ -22,7 +22,7 @@ SPECT_PATH = 'project_data/spectrograms'
 def process_track(track_id):
     try:
         path = utils.get_audio_path(AUDIO_DIR, track_id)
-        output_file = utils.get_spectogram_path(SPECT_PATH, track_id)
+        output_file = utils.get_spectrogram_path(SPECT_PATH, track_id)
 
         if not os.path.exists(path):
             return track_id, False  # File doesn't exist
