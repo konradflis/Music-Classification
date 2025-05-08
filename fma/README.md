@@ -11,10 +11,10 @@ Music Genre Classification using a Convolutional Neural Network (CNN).
 - **Dataset**: Place the dataset in the following structure:
   ```
   dataset/
-  ├── data/
-  │   └── genres_original/
+  ├── fma_small/
+  └── fma_metadata/
   ```
-- **Metadata**: The file `project_data/tracks.csv` contains the list of all tracks in the dataset and their names.
+- **Metadata**: The file `project_data/tracks.csv` contains the list of all tracks in the dataset and their IDs.
 - **Spectrograms**: Spectrograms will be generated and stored in the `project_data/spectrograms/` folder.
 
 ---
@@ -39,7 +39,7 @@ poetry install
 
 ### 3. Activate the Virtual Environment
 
-Select the created virtual environment in your IDE or activate it using:
+Select created virtual environment in your IDE or activate it using:
 
 ```bash
 poetry shell
@@ -65,12 +65,12 @@ poetry add numpy
 
 ### 1. Extract Spectrograms
 
-Spectrogram extraction is done using the `audio_to_spectrogram_v2.ipynb` notebook. The notebook contains the code to extract spectrograms from the audio files in the dataset.  
+Run the spectrogram extraction script spectrogram_extract.py to generate spectrograms.---
 The spectrograms will be saved in the `project_data/spectrograms/` folder.
 
 ### 2. Load Individual Spectrograms
 
-Use the utility function from `utils.py` to load individual spectrograms. Pass the path to the spectrograms folder and the track name as arguments.
+Use the utility function from `utils.py` to load individual spectrograms. Pass the path to the spectrograms folder and the track ID as arguments.
 
 ---
 

@@ -183,6 +183,9 @@ fma_metadata.zip
 project_data/audio_data/*
 project_data/spectrogram_data/*
 
+data.zip
+data
+
 .idea
 
 spectrograms
