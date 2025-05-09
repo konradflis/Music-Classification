@@ -1,8 +1,13 @@
 import os
+import ast
 import pandas as pd
+from sklearn.model_selection import train_test_split
+
+NB_AUDIO_SAMPLES = 1321967
+SAMPLING_RATE = 44100
 
 
-def get_audio_path(audio_dir, track_name):
+def get_audio_path(audio_dir, track_id):
     """
     Return the path to the mp3 given the directory where the audio is stored
     and the track ID.
@@ -11,16 +16,15 @@ def get_audio_path(audio_dir, track_name):
     --------
     >>> import utils
     >>> AUDIO_DIR = os.environ.get('AUDIO_DIR')
-    >>> utils.get_audio_path(AUDIO_DIR, 'blues.00000')
-    '../data/genres_original/blues/blues.00000.wav'  # Corrected example output
+    >>> utils.get_audio_path(AUDIO_DIR, 2)
+    '../data/fma_small/000/000002.mp3'
 
     """
-    genre = track_name.split('.')[0]
-    id = track_name.split('.')[1]  # Extract the part before the dot
-    return os.path.join(audio_dir, genre, genre + '.' + id + '.wav')
+    tid_str = '{:06d}'.format(track_id)
+    return os.path.join(audio_dir, tid_str[:3], tid_str + '.mp3')
 
 
-def get_spectrogram_path(spectrogram_dir, track_name):
+def get_spectrogram_path(spectrogram_dir, track_id):
     """
     Return the path to the spectrogram given the directory where the
     spectrogram is stored and the track ID.
@@ -29,14 +33,73 @@ def get_spectrogram_path(spectrogram_dir, track_name):
     --------
     >>> import utils
     >>> SPECTROGRAM_DIR = os.environ.get('SPECTROGRAM_DIR')
-    >>> utils.get_spectrogram_path(SPECTROGRAM_DIR, 'blues.00000')  # Fixed typo
-    '../data/genres_original/blues/blues.00000.png'
+    >>> utils.get_spectogram_path(SPECTROGRAM_DIR, 2)
+    '../data/fma_small/000/000002.png'
 
     """
-    genre = track_name.split('.')[0]
-    id = track_name.split('.')[1]  # Extract the part before the dot
-    return os.path.join(spectrogram_dir, genre, genre + '.' + id + '.png')
+    tid_str = '{:06d}'.format(track_id)
+    return os.path.join(spectrogram_dir, tid_str[:3], tid_str + '.png')
+
+
+def load(filepath):
+
+    filename = os.path.basename(filepath)
+
+    if 'features' in filename:
+        return pd.read_csv(filepath, index_col=0, header=[0, 1, 2])
+
+    if 'echonest' in filename:
+        return pd.read_csv(filepath, index_col=0, header=[0, 1, 2])
+
+    if 'genres' in filename:
+        return pd.read_csv(filepath, index_col=0)
+
+    if 'tracks' in filename:
+        tracks = pd.read_csv(filepath, index_col=0, header=[0, 1])
+
+        COLUMNS = [('track', 'tags'), ('album', 'tags'), ('artist', 'tags'),
+                   ('track', 'genres'), ('track', 'genres_all')]
+        for column in COLUMNS:
+            tracks[column] = tracks[column].map(ast.literal_eval)
+
+        COLUMNS = [('track', 'date_created'), ('track', 'date_recorded'),
+                   ('album', 'date_created'), ('album', 'date_released'),
+                   ('artist', 'date_created'), ('artist', 'active_year_begin'),
+                   ('artist', 'active_year_end')]
+        for column in COLUMNS:
+            tracks[column] = pd.to_datetime(tracks[column])
+
+        SUBSETS = ('small', 'medium', 'large')
+        try:
+            tracks['set', 'subset'] = tracks['set', 'subset'].astype(
+                'category', categories=SUBSETS, ordered=True)
+        except (ValueError, TypeError):
+            tracks['set', 'subset'] = tracks['set', 'subset'].astype(
+                pd.CategoricalDtype(categories=SUBSETS, ordered=True))
+
+        COLUMNS = [('track', 'genre_top'), ('track', 'license'),
+                   ('album', 'type'), ('album', 'information'),
+                   ('artist', 'bio')]
+        for column in COLUMNS:
+            tracks[column] = tracks[column].astype('category')
+
+        return tracks
 
 
 def load_mfcc_data():
     return pd.read_csv('project_data/mfcc_data.csv', header=[0, 1], index_col=0)
+
+
+def dataset_split():
+    df = pd.read_csv("project_data/tracks.csv")
+    df['filename'] = df['track_id'].apply(lambda x: f"{int(x):06d}.png")
+    df = df.dropna(subset=['genre'])
+    labels_df = df[['filename', 'genre']].rename(columns={'genre': 'label'})
+    train_df, val_df = train_test_split(
+        labels_df,
+        test_size=0.2,
+        stratify=labels_df['label'],
+        random_state=42
+    )
+    train_df.to_csv("project_data/train_set.csv", index=False)
+    val_df.to_csv("project_data/val_set.csv", index=False)
