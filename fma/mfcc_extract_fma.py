@@ -11,7 +11,7 @@ import logging
 logging.basicConfig(filename='mfcc_extract.log', level=logging.ERROR,
                     format='%(asctime)s - %(levelname)s - %(message)s')
 
-tracks = pd.read_csv('project_data/tracks.csv', index_col=0)
+tracks = pd.read_csv('project_data/tracks_fma.csv', index_col=0)
 track_ids = tracks.index
 
 AUDIO_DIR = 'dataset/fma_small'
@@ -48,8 +48,9 @@ def process_track(track_id):
 
 if __name__ == '__main__':
     # Run in parallel with limited workers
-    # Limit to 4 workers or available CPUs
-    max_workers = min(4, os.cpu_count() or 1)
+    # Limit to 8 workers or available CPUs
+    max_workers = min(8, os.cpu_count() or 1)
+    print(f"Using {max_workers} workers for parallel processing.")
     with ProcessPoolExecutor(max_workers=max_workers) as executor:
         results = list(
             tqdm(executor.map(process_track, track_ids), total=len(track_ids)))
@@ -59,4 +60,4 @@ if __name__ == '__main__':
         if data is not None:
             mfcc_df.loc[track_id] = data
 
-    mfcc_df.to_csv('project_data/mfcc_data.csv', index=True)
+    mfcc_df.to_csv('MLP/mfcc_data_fma_v1.csv', index=True)
