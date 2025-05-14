@@ -36,3 +36,4 @@ def get_spectrogram_path(spectrogram_dir, track_name):
     genre = track_name.split('.')[0]
     id = track_name.split('.')[1]  # Extract the part before the dot
     return os.path.join(spectrogram_dir, genre, genre + '.' + id + '.png')
+
