@@ -37,6 +37,3 @@ def get_spectrogram_path(spectrogram_dir, track_name):
     id = track_name.split('.')[1]  # Extract the part before the dot
     return os.path.join(spectrogram_dir, genre, genre + '.' + id + '.png')
 
-
-def load_mfcc_data():
-    return pd.read_csv('project_data/mfcc_data.csv', header=[0, 1], index_col=0)
