@@ -191,3 +191,9 @@ data
 spectrograms
 
 .pth
+
+VGGNet16/models/*.keras
+VGGNet16/*.png
+VGGNet16/*.zip
+
+.codebuddy
